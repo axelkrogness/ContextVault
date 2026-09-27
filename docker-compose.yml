@@ -6,17 +6,17 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-contextvault}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
     ports: ["5432:5432"]
-    volumes: ["pgdata:/var/lib/postgresql/data", "./api/sql:/docker-entrypoint-initdb.d"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./api/sql:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U contextvault -d contextvault"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-contextvault} -d ${POSTGRES_DB:-contextvault}"]
       interval: 5s
       timeout: 5s
       retries: 10
   api:
     build: ./api
     env_file: .env
-    environment:
-      DATABASE_URL: postgresql+psycopg://contextvault:${POSTGRES_PASSWORD:-change-me}@db:5432/${POSTGRES_DB:-contextvault}
     depends_on:
       db: {condition: service_healthy}
     ports: ["8000:8000"]
