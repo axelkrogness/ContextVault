@@ -1,16 +1,63 @@
-from fastapi import APIRouter,Depends,HTTPException
+from datetime import datetime, timedelta, timezone
+
+from fastapi import Depends, HTTPException, Header
+from jose import jwt
 from sqlalchemy.orm import Session
-from ..db import get_db
-from ..models import User
-from ..schemas import AuthIn,Token
-from ..security import hash_password,verify_password,token
-r=APIRouter(prefix='/api/v1/auth',tags=['Auth'])
-@r.post('/register',response_model=Token)
-def register(x:AuthIn,db:Session=Depends(get_db)):
-    if db.query(User).filter_by(email=x.email).first(): raise HTTPException(409,'Email already registered')
-    u=User(email=x.email,password_hash=hash_password(x.password)); db.add(u); db.commit(); db.refresh(u); return Token(access_token=token(u.id))
-@r.post('/login',response_model=Token)
-def login(x:AuthIn,db:Session=Depends(get_db)):
-    u=db.query(User).filter_by(email=x.email).first()
-    if not u or not verify_password(x.password,u.password_hash): raise HTTPException(401,'Invalid credentials')
-    return Token(access_token=token(u.id))
+from .config import settings
+from .db import SessionLocal
+from .models import User
+from pwdlib import PasswordHash
+
+password_hash = PasswordHash.recommended()
+
+
+def db():
+    s = SessionLocal()
+    try:
+        yield s
+    finally:
+        s.close()
+
+
+def hash_password(password: str) -> str:
+    return password_hash.hash(password)
+
+
+def verify_password(password: str, hashed: str) -> bool:
+    return password_hash.verify(password, hashed)
+
+
+def create_token(uid: int):
+    return jwt.encode(
+        {
+            "sub": str(uid),
+            "exp": datetime.now(timezone.utc) + timedelta(hours=24),
+        },
+        settings.jwt_secret,
+        algorithm="HS256",
+    )
+
+
+def current_user(
+    authorization: str = Header(default=""),
+    session: Session = Depends(db),
+):
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(401, "Authentication required")
+
+    try:
+        uid = int(
+            jwt.decode(
+                authorization[7:],
+                settings.jwt_secret,
+                algorithms=["HS256"],
+            )["sub"]
+        )
+    except Exception:
+        raise HTTPException(401, "Invalid or expired token")
+
+    u = session.get(User, uid)
+    if not u:
+        raise HTTPException(401, "User not found")
+
+    return u
