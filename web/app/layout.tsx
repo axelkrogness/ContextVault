@@ -1,3 +1,1 @@
-import './globals.css';
-export const metadata={title:'ContextVault — AI Memory Infrastructure',description:'Long-term memory infrastructure for AI agents'};
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}</body></html>}
+import "./globals.css";export const metadata={title:"ContextVault",description:"Long-term memory infrastructure for AI agents"};export default function Layout({children}:{children:React.ReactNode}){return <><nav className="nav"><a className="brand" href="/"><span className="logo">C</span>ContextVault</a><span className="muted">Powered by Codyza</span></nav>{children}</>}
