@@ -1,11 +1,11 @@
-{
+﻿{
   "project": "ContextVault",
   "github_repository": "https://github.com/axelkrogness/ContextVault.git",
   "known_deployment": {
     "web": "https://web-axel-bdef.vercel.app",
     "api": "https://api-axel-bdef.vercel.app"
   },
-  "v9_deployed_and_verified": false,
+  "v9_deployed_and_verified": true,
   "required_files": [
     "README.md",
     "api/.env.example",
