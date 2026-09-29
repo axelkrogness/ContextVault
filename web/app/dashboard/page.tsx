@@ -6,7 +6,7 @@ export default function Dashboard(){
  const[apps,setApps]=useState<any[]>([]),[agents,setAgents]=useState<any[]>([]),[spaces,setSpaces]=useState<any[]>([]),[mem,setMem]=useState<any[]>([]),[results,setResults]=useState<any[]>([]);
  const[appName,setAppName]=useState(""),[agentName,setAgentName]=useState(""),[appId,setAppId]=useState(""),[agentId,setAgentId]=useState("");
  const[nsName,setNsName]=useState("default"),[nsId,setNsId]=useState(""),[retention,setRetention]=useState("30");
- const[content,setContent]=useState(""),[tags,setTags]=useState(""),[meta,setMeta]=useState('{"source":"dashboard"}'),[importance,setImportance]=useState(.7),[expires,setExpires]=useState("");
+ const[content,setContent]=useState(""),[tags,setTags]=useState(""),[meta,setMeta]=useState(''),[importance,setImportance]=useState(.7),[expires,setExpires]=useState("");
  const[q,setQ]=useState(""),[mode,setMode]=useState("hybrid"),[start,setStart]=useState(""),[end,setEnd]=useState("");
  const[keys,setKeys]=useState<any[]>([]),[newKey,setNewKey]=useState(""),[analytics,setAnalytics]=useState<any>(null),[usage,setUsage]=useState<any[]>([]);
  const[rate,setRate]=useState<any>(null),[shared,setShared]=useState<any[]>([]),[ready,setReady]=useState<any>(null);
@@ -49,4 +49,5 @@ export default function Dashboard(){
  <div className="card"><h2>Data & analytics</h2><button className="button" onClick={exportData}>Export memories JSON</button></div></section>
  <div className="footer">Powered by Codyza</div></main>
 }
+
 
