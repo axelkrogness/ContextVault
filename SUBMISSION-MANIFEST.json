@@ -1,0 +1,21 @@
+{
+  "project": "ContextVault",
+  "github_repository": "https://github.com/axelkrogness/ContextVault.git",
+  "known_deployment": {
+    "web": "https://web-axel-bdef.vercel.app",
+    "api": "https://api-axel-bdef.vercel.app"
+  },
+  "v9_deployed_and_verified": false,
+  "required_files": [
+    "README.md",
+    "api/.env.example",
+    "web/.env.example",
+    "docs/API.md",
+    "api/schema.sql",
+    "docs/ARCHITECTURE.md",
+    "docs/SETUP.md",
+    "docs/DEPLOYMENT.md",
+    "docs/PRODUCTION-ACCEPTANCE.md"
+  ],
+  "note": "Known deployment URLs predate V9 until V9 is pushed/redeployed and smoke-tested."
+}

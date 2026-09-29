@@ -1,1 +1,18 @@
- "use client";import {useState} from "react";import {useRouter} from "next/navigation";import Link from "next/link";import {api} from "../../lib/api";export default function Login(){const[r,setR]=useState("");const[e,setE]=useState("");const[p,setP]=useState("");const router=useRouter();async function go(x:any){x.preventDefault();setR("");try{const d=await api("/api/v1/auth/login",{method:"POST",body:JSON.stringify({email:e,password:p})});localStorage.setItem("cv_token",d.access_token);router.push("/dashboard")}catch(x){setR(x instanceof Error?x.message:"Login failed")}}return <main className="container"><section className="auth card"><span className="eyebrow">Secure access</span><h1>Welcome back</h1><p className="muted">Sign in to your memory workspace.</p>{r&&<div className="error">{r}</div>}<form className="form" onSubmit={go}><label>Email<input type="email" required value={e} onChange={x=>setE(x.target.value)}/></label><label>Password<input type="password" required value={p} onChange={x=>setP(x.target.value)}/></label><button className="btn primary">Sign in</button></form><p className="muted">No account? <Link href="/register">Create one</Link></p></section></main>}
+"use client";
+import {FormEvent,useState} from "react";
+import {useRouter} from "next/navigation";
+import Link from "next/link";
+export default function Page(){
+ const[email,setEmail]=useState("");const[password,setPassword]=useState("");const[error,setError]=useState("");const[busy,setBusy]=useState(false);
+ const router=useRouter();const api=process.env.NEXT_PUBLIC_API_URL||"http://localhost:8000";
+ async function submit(e:FormEvent){e.preventDefault();setBusy(true);setError("");try{
+  const r=await fetch(api+"/api/v1/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
+  const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.detail||`Request failed (${r.status})`);
+  localStorage.setItem("cv_token",d.access_token);router.push("/dashboard");
+ }catch(e:any){setError(e.message||"Unable to continue")}finally{setBusy(false)}}
+ return <main className="shell"><div className="card authCard"><div className="brand"><img src="/contextvault-logo.svg" width="42" height="42" alt="ContextVault logo"/>ContextVault</div><h1>Login</h1>
+ <form onSubmit={submit}><label>Email<input className="input" type="email" required autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)}/></label>
+ <label>Password<input className="input" type="password" required minLength={8} autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)}/></label>
+ {error&&<div className="notice errorNotice" role="alert">{error}</div>}<button className="button" disabled={busy}>{busy?"Working…":"Login"}</button></form>
+ <p className="muted"><Link href="/register">Create an account</Link></p><div className="footer">Powered by Codyza</div></div></main>
+}

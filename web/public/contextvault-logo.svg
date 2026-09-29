@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="ContextVault logo">
+<defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#111827"/><stop offset="1" stop-color="#4f46e5"/></linearGradient></defs>
+<path fill="url(#g)" d="M64 6 112 25v34c0 31-19 53-48 63C35 112 16 90 16 59V25L64 6Z"/>
+<path fill="#fff" d="M64 29a25 25 0 1 0 0 50 25 25 0 0 0 0-50Zm0 11a14 14 0 1 1 0 28 14 14 0 0 1 0-28Zm-5 33h10v23H59z"/>
+</svg>
