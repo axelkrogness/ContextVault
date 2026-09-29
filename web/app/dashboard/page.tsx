@@ -18,7 +18,7 @@ export default function Dashboard(){
  async function createApp(){await act(async()=>{const d=await call("/api/v1/applications",{method:"POST",body:JSON.stringify({name:appName})});setAppId(d.id);setMsg("Application created");refresh()})}
  async function createAgent(){await act(async()=>{const d=await call("/api/v1/agents",{method:"POST",body:JSON.stringify({application_id:appId,name:agentName,namespace:"default"})});setAgentId(d.id);setMsg("Agent created");refresh()})}
  async function createNs(){await act(async()=>{const d=await call("/api/v1/namespaces",{method:"POST",body:JSON.stringify({agent_id:agentId,name:nsName,retention_days:Number(retention)||null})});setNsId(d.id);setMsg("Namespace created");refresh()})}
- async function save(){await act(async()=>{let metadata={};if(meta.trim()){try{metadata=JSON.parse(meta)}catch{throw new Error("Metadata must be valid JSON")}};const d=await call("/api/v1/memories",{method:"POST",body:JSON.stringify({agent_id:agentId,namespace_id:nsId||null,content,tags:tags.split(",").map(x=>x.trim()).filter(Boolean),metadata,importance,expires_at:expires?new Date(expires).toISOString():null})});setMsg(d.duplicate?"Duplicate detected — existing memory returned":"Memory saved");setContent("");refresh()})}
+ async function save(){await act(async()=>{let metadata={};;const d=await call("/api/v1/memories",{method:"POST",body:JSON.stringify({agent_id:agentId,namespace_id:nsId||null,content,tags:tags.split(",").map(x=>x.trim()).filter(Boolean),metadata,importance,expires_at:expires?new Date(expires).toISOString():null})});setMsg(d.duplicate?"Duplicate detected — existing memory returned":"Memory saved");setContent("");refresh()})}
  async function search(){await act(async()=>setResults(await call("/api/v1/memories/search",{method:"POST",body:JSON.stringify({query:q,mode,agent_id:agentId||null,namespace_id:nsId||null,start_date:start?new Date(start).toISOString():null,end_date:end?new Date(end).toISOString():null})})))}
  async function mutate(id:string,action:string,method="POST"){await act(async()=>{await call(`/api/v1/memories/${id}${action}`,{method});setMsg("Memory updated");refresh()})}
  async function editMemory(x:any){const next=prompt("Edit memory",x.content);if(next===null||next.trim()==="")return;await act(async()=>{await call(`/api/v1/memories/${x.id}`,{method:"PUT",body:JSON.stringify({content:next})});setMsg("Memory edited");refresh()})}
@@ -49,6 +49,7 @@ export default function Dashboard(){
  <div className="card"><h2>Data & analytics</h2><button className="button" onClick={exportData}>Export memories JSON</button></div></section>
  <div className="footer">Powered by Codyza</div></main>
 }
+
 
 
 
