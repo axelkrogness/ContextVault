@@ -229,7 +229,7 @@ def run_search(b,u,s):
         kw=1.0 if txt and txt in x.content.lower() else 0.0
         sem=cosine(v,list(x.embedding)) if txt else 0.0
         score=(kw+.05*x.importance) if b.mode=="keyword" else (sem+.05*x.importance) if b.mode=="semantic" else (.55*sem+.4*kw+.05*x.importance)
-        rank.append((score,x))
+        if b.mode!="keyword" or kw>0: rank.append((score,x))
     rank.sort(key=lambda z:z[0],reverse=True)
     return [{"id":x.id,"content":x.content,"score":round(float(sc),4),"importance":x.importance} for sc,x in rank[:b.limit]]
 
@@ -321,4 +321,5 @@ def readiness(u:User=Depends(current_user),s:Session=Depends(db)):
         "cors_configured": bool(settings.cors_origins),
         "ready": vector_ok
     }
+
 
