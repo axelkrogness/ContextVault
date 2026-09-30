@@ -124,7 +124,7 @@ def create_mem(b,u,s):
     exact=next((m for m in rows if " ".join(m.content.lower().split())==normalized),None)
     if exact:return exact,True
     v=embedding(b.content)
-    dup=next((m for m in rows if cosine(v,list(m.embedding or []))>=.97),None)
+    dup=next((m for m in rows if cosine(v,list(m.embedding))>=.97),None)
     if dup:return dup,True
     effective_expiry=b.expires_at
     if not effective_expiry and b.namespace_id:
@@ -211,9 +211,9 @@ def restore(mid:UUID,u:User=Depends(current_user),s:Session=Depends(db)):
     x=memory_access(s,u,mid,True);x.archived=False;s.commit();return {"status":"restored"}
 @app.get("/api/v1/memories/{mid}/similar")
 def similar(mid:UUID,u:User=Depends(current_user),s:Session=Depends(db)):
-    x=memory_access(s,u,mid);agent_access(s,u,x.agent_id);v=list(x.embedding or [])
+    x=memory_access(s,u,mid);agent_access(s,u,x.agent_id);v=list(x.embedding)
     rows=s.scalars(select(Memory).where(Memory.agent_id==x.agent_id,Memory.id!=x.id,Memory.archived==False)).all()
-    ranked=sorted(((cosine(v,list(m.embedding or [])),m) for m in rows),key=lambda z:z[0],reverse=True)[:10]
+    ranked=sorted(((cosine(v,list(m.embedding)),m) for m in rows),key=lambda z:z[0],reverse=True)[:10]
     return [{"id":m.id,"content":m.content,"similarity":round(sc,4)} for sc,m in ranked]
 
 def run_search(b,u,s):
@@ -227,7 +227,7 @@ def run_search(b,u,s):
     for x in rows:
         if x.expires_at and x.expires_at<now:continue
         kw=1.0 if txt and txt in x.content.lower() else 0.0
-        sem=cosine(v,list(x.embedding or [])) if txt else 0.0
+        sem=cosine(v,list(x.embedding)) if txt else 0.0
         score=(kw+.05*x.importance) if b.mode=="keyword" else (sem+.05*x.importance) if b.mode=="semantic" else (.55*sem+.4*kw+.05*x.importance)
         rank.append((score,x))
     rank.sort(key=lambda z:z[0],reverse=True)
