@@ -23,7 +23,7 @@ export default function Dashboard(){
  async function mutate(id:string,action:string,method="POST"){await act(async()=>{await call(`/api/v1/memories/${id}${action}`,{method});setMsg("Memory updated");refresh()})}
  async function editMemory(x:any){const next=prompt("Edit memory",x.content);if(next===null||next.trim()==="")return;await act(async()=>{await call(`/api/v1/memories/${x.id}`,{method:"PUT",body:JSON.stringify({content:next})});setMsg("Memory edited");refresh()})}
  async function similar(id:string){await act(async()=>{setResults(await call(`/api/v1/memories/${id}/similar`));setMsg("Similar memories")})}
- async function createKey(){await act(async()=>{const d=await call("/api/v1/api-keys",{method:"POST",body:JSON.stringify({name:"dashboard-key"})});setNewKey(d.api_key);refresh()})}
+ async function createKey(){await act(async()=>{const d=await call("/api/v1/api-keys",{method:"POST",body:JSON.stringify({name:"dashboard-key"})});setNewKey(d.api_key);setKeys(await call("/api/v1/api-keys"))})}
  async function revoke(id:string){await act(async()=>{await call(`/api/v1/api-keys/${id}/revoke`,{method:"POST"});setNewKey("");setKeys(await call("/api/v1/api-keys"))})}
  async function share(){await act(async()=>{await call(`/api/v1/permissions?application_id=${appId}&user_email=${encodeURIComponent(shareEmail)}&role=${role}`,{method:"POST"});setMsg("Permission added")})}
  async function enforce(){await act(async()=>{const d=await call("/api/v1/retention/enforce",{method:"POST"});setMsg(`Retention enforced: ${d.archived} archived`);refresh()})}
@@ -49,6 +49,7 @@ export default function Dashboard(){
  <div className="card"><h2>Data & analytics</h2><button className="button" onClick={exportData}>Export memories JSON</button></div></section>
  <div className="footer">Powered by Codyza</div></main>
 }
+
 
 
 
