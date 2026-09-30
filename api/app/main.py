@@ -231,7 +231,7 @@ def run_search(b,u,s):
         score=(kw+.05*x.importance) if b.mode=="keyword" else (sem+.05*x.importance) if b.mode=="semantic" else (.55*sem+.4*kw+.05*x.importance)
         rank.append((score,x))
     rank.sort(key=lambda z:z[0],reverse=True)
-    return [{"id":x.id,"content":x.content,"score":round(sc,4),"importance":x.importance} for sc,x in rank[:b.limit]]
+    return [{"id":x.id,"content":x.content,"score":round(float(sc),4),"importance":x.importance} for sc,x in rank[:b.limit]]
 
 @app.post("/api/v1/memories/search")
 def search(b:SearchIn,u:User=Depends(current_user),s:Session=Depends(db)):return run_search(b,u,s)
@@ -321,3 +321,4 @@ def readiness(u:User=Depends(current_user),s:Session=Depends(db)):
         "cors_configured": bool(settings.cors_origins),
         "ready": vector_ok
     }
+
