@@ -34,8 +34,8 @@ See `docs/DEPLOYMENT.md` for the Vercel API/web configuration and production env
 After generating an API key in the dashboard, call `POST /api/v1/memories/ingest` with `Authorization: Bearer <api-key>` and a JSON body containing `agent_id`, optional `namespace_id`, `content`, `tags`, `metadata`, `importance`, and optional `expires_at`.
 
 ## Final submission fields
-- Live web URL: fill after V8 deployment verification
-- Live API URL: fill after V8 deployment verification
+- Live web URL: https://web-axel-bdef.vercel.app/
+- Live API URL: https://api-axel-bdef.vercel.app/
 - GitHub repository: https://github.com/axelkrogness/ContextVault
 
 ## V9 production hardening
